@@ -45,7 +45,7 @@ def main_page():
 @app.route('/search', methods=['GET'])
 def search_page():
   search_query = request.args.get('search_query')
-  print(search_query)
+  #print(search_query)
   return json.dumps({
             'status': 'OK',
             'items': search(search_query)

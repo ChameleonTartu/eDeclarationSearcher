@@ -24,18 +24,14 @@
         contentType: 'application/json;charset=UTF-8',
         type: 'GET',
         success: function(response) {
-          console.warn("response!", response);
           var object = JSON.parse(response).items;
-          console.error(typeof(response));
-          console.error(object);
           for (var index in object) {
             var obj = object[index];
-            console.log(obj);
             $('.data > tbody').append(createTableRow(obj));
           }
         },
         error: function(error) {
-          console.warn("error!", error);
+          console.log("error!", error);
         }
       });
       $('.data').removeClass('hidden');
