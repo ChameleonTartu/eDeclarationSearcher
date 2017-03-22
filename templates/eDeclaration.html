@@ -1,0 +1,163 @@
+
+<!DOCTYPE html lang="ua">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional Bootstrap theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <title>Декларація</title>
+</head>
+
+<script type="text/javascript">
+    function searchServer() {
+      $('.data > tbody').empty();
+      $('.data').addClass('hidden');
+
+      var search_query = document.getElementById('search').value;
+      $.ajax({
+        url: '/search',
+        data: {
+          search_query: search_query
+        },
+        contentType: 'application/json;charset=UTF-8',
+        type: 'GET',
+        success: function(response) {
+          console.warn("response!", response);
+          var object = JSON.parse(response).items;
+          console.error(typeof(response));
+          console.error(object);
+          for (var index in object) {
+            var obj = object[index];
+            console.log(obj);
+            $('.data > tbody').append(createTableRow(obj));
+          }
+        },
+        error: function(error) {
+          console.warn("error!", error);
+        }
+      });
+      $('.data').removeClass('hidden');
+    }
+
+    function search() {
+      $('.data > tbody').empty();
+      $('.data').addClass('hidden');
+
+      // TODO Rewrite
+      var search_query = document.getElementById('search').value;
+      //alert(search_query);
+
+      var num_page = 1;
+      var base_url = "https://public-api.nazk.gov.ua/v1/declaration/";
+
+      var url;
+      if (search_query !== "") {
+        url = base_url + '?q=' + search_query + '&page=';
+      }
+      else {
+        url = base_url + '?page=';
+      }
+      // alert('Url ' + url);
+
+      var max_pages = 10;
+      while(max_pages > num_page) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: url + num_page,
+            dataType: "json",
+            crossDomain: true,
+            success: function(object){
+              //alert('Test!');
+              for (var index in object.items) {
+                var obj = object.items[index];
+                $('.data > tbody').append(createTableRow(obj));
+              }
+            },
+            error: function(error) {
+              //alert('fail');
+            }
+          });
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url + num_page, true);
+          xhr.send();
+          xhr.onreadystatechange = processRequest;
+
+          function processRequest(e) {
+            console.log("request proccessed");
+          }
+          console.log(xhr);
+
+          num_page += 1;
+      }
+
+      // TODO Show data
+      $('.data').removeClass('hidden');
+    }
+
+    function createTableRow(object) {
+      return "<tr>" +
+                    createTableCell(object.firstname) +
+                    createTableCell(object.lastname) +
+                    createTableCell(object.placeOfWork) +
+                    createTableCell(object.position) +
+                    createTableCellAsLink(object.linkPDF) +
+             "</tr>";
+    }
+
+    function createTableCell(object) {
+      if (object === undefined) {
+        object = "";
+      }
+      return "<td>" + object + "</td>"
+    }
+
+    function createTableCellAsLink(object) {
+      var pdf = "PDF";
+      if (object === undefined) {
+        object = "#";
+        pdf = "";
+      }
+      return "<td><a href=\"" + object + "\" target=\"_blank\">" + pdf + "</a></td>"
+    }
+
+</script>
+<body>
+  <div class="row invisible">Small margin</div>
+    <!-- Render it beautifully -->
+  <div class="row">
+      <div class="col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10">
+        <div class="input-group">
+          <input id="search" type="text" class="form-control" placeholder="Введіть пошуковий запит...">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" onclick="searchServer()">Шукати!</button>
+          </span>
+        </div><!-- /input-group -->
+      </div>
+  </div><!-- /.row -->
+
+  <table class="table hidden data">
+    <thead>
+        <th>Ім'я</th>
+        <th>Прізвище</th>
+        <th>Місце роботи</th>
+        <th>Посада</th>
+        <th>Посилання на PDF</th>
+    </thead>
+    <tbody>
+      <tr>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+
+
+</html>
