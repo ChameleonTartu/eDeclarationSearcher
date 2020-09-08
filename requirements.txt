@@ -34,7 +34,7 @@ py==1.4.31
 py-googletrans==1.2
 pyasn1==0.2.1
 pyasn1-modules==0.0.8
-requests==2.12.4
+requests==2.20.0
 Routes==2.2
 rsa==3.4.2
 scikit-learn==0.18.1
