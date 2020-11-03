@@ -47,7 +47,7 @@ stevedore==1.18.0
 tox==2.5.0
 translate==2.0.0
 trollius==2.1
-Twisted==16.6.0
+Twisted==20.3.0
 typogrify==2.0.7
 Unidecode==0.4.20
 virtualenv==15.1.0
